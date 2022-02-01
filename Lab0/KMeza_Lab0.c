@@ -2,7 +2,7 @@
 Name: Kat Meza
 Assignment: Lab 0 Part 4
 Date: 1/25/22
-Description: Random Numbers
+Description: A C program which will read a list of 20 numbers from a .txt file and find the sum of all numbers
 */ 
 
 #include <stdio.h>
