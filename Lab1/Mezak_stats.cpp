@@ -11,7 +11,12 @@ KXM::Stats::Stats(){
 
 }
 
-KXM::Stats::minimum(std::vector<float> data){
+void KXM::Stats::minimum(std::vector<float> data){
+
+    return this->min;
+}
+
+float getmin(){
 
     return this->min;
 }
