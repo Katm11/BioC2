@@ -23,10 +23,10 @@ namespace KXM{
                     //setters
                     Stats();
                     
-                    void minimum(vector<float>);
-                    void maximum(vector<float>);
-                    void mean(vector<float>);
-                    void stdev(vector<float>);
+                    void findmin(vector<float>);
+                    void findmax(vector<float>);
+                    void findmean(vector<float>);
+                    void findstdev(vector<float>);
                     vector<float> histogram(vector<float>);
                 
             private:
@@ -38,7 +38,7 @@ namespace KXM{
 }
 
 
- void KXM::Stats::minimum(std::vector<float> data){
+ void KXM::Stats::findmin(std::vector<float> data){
 
      int size = data.size();
      int i = 0;
@@ -46,7 +46,7 @@ namespace KXM{
 
      while(i < size){
 
-         if(min < data[i]){
+         if(min > data[i]){
 
             this->min = data[i];
          }
@@ -55,7 +55,7 @@ namespace KXM{
      //return min;
 }
 
-void KXM::Stats::maximum(std::vector<float> data){
+void KXM::Stats::findmax(std::vector<float> data){
 
      int size = data.size();
      int i = 0;
@@ -63,7 +63,7 @@ void KXM::Stats::maximum(std::vector<float> data){
 
      while(i < size){
 
-         if(max > data[i]){
+         if(max < data[i]){
 
             this->max = data[i];
          }
