@@ -23,6 +23,7 @@ namespace KXM{
             public:
                     //setters
                     Stats();
+                    float PrintStats(vector<float> data);
                     
                     float findmin(vector<float> data);
                     float findmax(vector<float> data);
@@ -37,59 +38,6 @@ namespace KXM{
                     float mean;
     };
 
-}
-
-
- float KXM::Stats::findmin(std::vector<float> data){
-
-     int size = data.size();
-     int i = 0;
-     float min = data[0];
-
-     while(i < size){
-
-         if(min > data[i]){
-
-            min = data[i];
-         }
-         i++;
-     }
-     return min;
-}
-
-float KXM::Stats::findmax(std::vector<float> data){
-
-     int size = data.size();
-     int i = 0;
-     float max = data[0];
-
-     while(i < size){
-
-         if(max < data[i]){
-
-            max = data[i];
-         }
-         i++;
-     }
-     return max;
-}
-
-float KXM::Stats::findmean(std::vector<float> data){
-
-     int size = data.size();
-     int i = 0;
-     float sum = 0;
-     float mean = 0;
-
-     while(i < size){
-
-            sum = sum + data[i];
-         
-         i++;
-        
-     }
-     mean = sum/size;
-     return mean;
 }
 
 #endif
