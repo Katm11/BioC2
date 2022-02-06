@@ -8,14 +8,13 @@
 using namespace std;
 
 std::vector<float> data;
+std::string filename;
 
-int main () {
-  string filename;
+void readFile(std::string filename){
+
+//std::string filename;
   ifstream myfile;
   string line;
-
-  cout<<"which file do you want to open?";
-  cin>>filename;
 
     myfile.open(filename);
 
@@ -35,5 +34,12 @@ int main () {
 
   else cout << "Unable to open file"; 
 
-  return 0;
+}
+
+int main () {
+   //std::string filename;
+  cout<<"Which file do you want to open? ";
+  cin>>filename;
+  readFile(filename);
+
 }
