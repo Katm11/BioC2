@@ -19,17 +19,19 @@ namespace KXM{
 
     class Stats{
 
+        
             public:
                     //setters
                     Stats();
                     
-                    void findmin(vector<float>);
-                    void findmax(vector<float>);
-                    void findmean(vector<float>);
-                    void findstdev(vector<float>);
+                    float findmin(vector<float> data);
+                    float findmax(vector<float> data);
+                    float findmean(vector<float> data);
+                    float findstdev(vector<float>);
                     vector<float> histogram(vector<float>);
                 
             private:
+                    std::vector<float> data;
                     float min;
                     float max;
                     float mean;
@@ -38,7 +40,7 @@ namespace KXM{
 }
 
 
- void KXM::Stats::findmin(std::vector<float> data){
+ float KXM::Stats::findmin(std::vector<float> data){
 
      int size = data.size();
      int i = 0;
@@ -48,14 +50,14 @@ namespace KXM{
 
          if(min > data[i]){
 
-            this->min = data[i];
+            min = data[i];
          }
          i++;
      }
-     //return min;
+     return min;
 }
 
-void KXM::Stats::findmax(std::vector<float> data){
+float KXM::Stats::findmax(std::vector<float> data){
 
      int size = data.size();
      int i = 0;
@@ -65,11 +67,29 @@ void KXM::Stats::findmax(std::vector<float> data){
 
          if(max < data[i]){
 
-            this->max = data[i];
+            max = data[i];
          }
          i++;
      }
-     //return max;
+     return max;
+}
+
+float KXM::Stats::findmean(std::vector<float> data){
+
+     int size = data.size();
+     int i = 0;
+     float sum = 0;
+     float mean = 0;
+
+     while(i < size){
+
+            sum = sum + data[i];
+         
+         i++;
+        
+     }
+     mean = sum/size;
+     return mean;
 }
 
 #endif
