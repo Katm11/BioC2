@@ -22,20 +22,31 @@ namespace KXM{
         
             public:
                     //setters
-                    Stats();
-                    float PrintStats(vector<float> data);
+                    Stats(float, float);
                     
-                    float findmin(vector<float> data);
-                    float findmax(vector<float> data);
-                    float findmean(vector<float> data);
-                    float findstdev(vector<float>);
-                    vector<float> histogram(vector<float>);
+                    void findmin(vector<float> data);
+                    void findmax(vector<float> data);
+                    void findmean(vector<float> data);
+                    void findstdev(vector<float> data);
+                    void findhistogram(vector<float> data);
                 
-            private:
-                    std::vector<float> data;
+                    float getmin();
+                    float getmax();
+                    float getmean();
+                    float getstdev();
+                    vector<float> gethistogram();
+
+                   
+                    
+
+           private:
+                    //std::vector<float> data;
                     float min;
                     float max;
                     float mean;
+                    float stdev;
+                    vector<float> histogramdata{};
+                   
     };
 
 }
