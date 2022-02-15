@@ -1,6 +1,5 @@
 
 #include "MezaK_stats.hpp"
-#include "MezaK_stats.cpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -31,9 +30,11 @@ int main (int arc, char* argv[]) {
     std::istream_iterator<float> start(myfile), end;
     std::vector<float> data(start, end);
   
-   float min,max,mean,stdev;
+   float min,max,sum,mean,stdev;
    vector<float> histogram;
     float size = data.size();
+
+  cout << "Number of points: " << size << endl;
 
    Testing.findmin(data); 
    min = Testing.getmin();
@@ -43,17 +44,24 @@ int main (int arc, char* argv[]) {
    max = Testing.getmax();
     cout << "Max value is: " << max << endl;
 
+  Testing.findmean(data); 
+   sum = Testing.getsum();
+    cout << "Sum value is: " << sum << endl;
+
    Testing.findmean(data); 
-   mean = Testing.getmin();
+   mean = Testing.getmean();
     cout << "Mean value is: " << mean << endl;
 
   Testing.findstdev(data); 
    stdev = Testing.getstdev();
     cout << "Standard Dev value is: " << stdev << endl;
 
-   //Testing.findhistogram(data); 
-  // histogram = Testing.gethistogram();
-  // cout << "Histogram value is: \n" << histogram << endl;
+   
+
+  cout << "Histogram \n"<< endl;
+  Testing.findhistogram(data); 
+  histogram = Testing.gethistogram();
+  //cout << "Histogram value is: " << histogram <<endl;
 
   }
   else cout << "Unable to open file"; 

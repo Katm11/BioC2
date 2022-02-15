@@ -17,6 +17,7 @@ KXM::Stats::Stats(float min, float max){
         this->min;
         this->max;
         this->mean;
+        this->sumval;
         this->stdev;
         std::vector<float> histogramdata{};
 
@@ -73,11 +74,15 @@ void KXM::Stats::findmean(std::vector<float> data){
 
      for(int i = 0 ; i < size; i++){
 
-            sum = sum + data[i];
+           sum = sum + data[i];
      }
-
-     this-> mean = sum/size;
+    this->sumval = sum;
+    this->mean = sum/size;
     // return mean;
+}
+
+float KXM::Stats::getsum(){
+    return this->sumval;
 }
 
 float KXM::Stats::getmean(){
@@ -114,28 +119,46 @@ void  KXM::Stats::findhistogram(std::vector<float> data) {
     width = 0.4 * (this->stdev);
     std::vector<float> histogramval{}; 
 
-    int numbuckets = 15;
-    int counter[15];
     
-    for(int i = 0; i < size; i++){
-        
+    int Index = 0;
+
         lower = this->mean - (3 * this->stdev);
-        upper = this->mean - (3 * this->stdev);
-    }   
+        upper = this->mean + (3 * this->stdev);
+ 
+    int numbuckets = (lower-upper)/width;
+  
+    int bin[numbuckets+1];
 
         for (int i = 0; i < size; i++) { 
+         Index=0;
+            if ((data[i] >= lower) && (data[i] < upper)) {    
 
-            if (data[i] >= lower && data[i] < upper) {    
-
-                cout << data[i] << endl ;
-
+                Index = (data[i]-lower)/width;
             }
-        }    
+            else if(data[i]>upper){
+            
+                Index = size;
+            }
+    ++bin[Index];
+            }
+          
         
-    for (int k = 0; k < 15; k++){
-        histogramval.insert(histogramdata.end(), 1, counter[k]);
+    //for (int k = 0; k < 16; k++){
+        //histogramval.insert(histogramdata.end(), 1, bin[k]);
+
+        //histogramval.push_back(bin[k]);
+   // }
+    for(int i=0; i<16; ++i){
+
+    cout << bin[i] << "\t| ";
+    
+    for(int j=0; j<bin[i] && j<size; ++j){
+      
+      cout << "*";
     }
-    this->histogramdata = histogramval;
+    cout << endl;
+  }
+    //this->histogramdata = histogramval;
     }
     
 
@@ -143,7 +166,3 @@ std::vector<float> KXM::Stats::gethistogram(){
 
     return this->histogramdata;
 }
-
-//int main(){
-
-//}

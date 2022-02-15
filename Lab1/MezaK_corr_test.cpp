@@ -1,5 +1,4 @@
-#include "Mezak_corr.hpp"
-#include"MezaK_stats.cpp"
+#include "MezaK_corr.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -13,30 +12,48 @@ using namespace std;
 std::vector<float> data1;
 std::vector<float> data2;
 
-std::string filename;
-ifstream myfile;
+std::string filename1;
+std::string filename2;
+ifstream myfile1;
+ifstream myfile2;
 
-int main(){
+int main(int arc, char* argv[]){
 
 float m1,m2;
-  KXM::Stats Testing(m1,m2);
-  cout<<"Which file do you want to open? ";
-  cin>>filename;
-  
-  myfile.open(filename);
+KXM1::Corr Test(m1,m2);
 
-  if (myfile.is_open()){
+  cout<<"Input File 1: ";
+  cin>>filename1;
+  
+  cout<<"Input File 2: ";
+  cin>>filename2;
+  
+  myfile1.open(filename1);
+  myfile2.open(filename2);
+
+  if (myfile1.is_open()  && myfile2.is_open()){
     
-    std::istream_iterator<float> start(myfile), end;
-    std::vector<float> data(start, end);
+  std::istream_iterator<float> start1(myfile1), end1;
+  std::vector<float> data1(start1, end1);
   
-   float min,max,mean,stdev;
-   vector<float> histogram;
-    float size = data.size();
+  std::istream_iterator<float> start2(myfile2), end2;
+  std::vector<float> data2(start2, end2);
 
-   Testing.findmin(data); 
-   min = Testing.getmin();
-    cout << "Min value is: " << min << endl;
 
-  else cout << "Unable to open file"; 
+   float corr;
+  //float size = data.size();
+
+   Test.findcorr(data1,data2); 
+   corr = Test.getcorr();
+    cout << "Corr value is: " << corr << endl;
+  }
+  else if(!myfile1){
+     cout << "ERROR: Unable to open file 1" << endl;
+  }
+  else if(!myfile2){
+    cout << "ERROR: Unable to open file 2" << endl;
+  }
+  else{
+    cout << "ERROR: Unable to open both files" << endl;
+  }
 }

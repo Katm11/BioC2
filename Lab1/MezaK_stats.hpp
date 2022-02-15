@@ -33,6 +33,7 @@ namespace KXM{
                     float getmin();
                     float getmax();
                     float getmean();
+                    float getsum();
                     float getstdev();
                     vector<float> gethistogram();
 
@@ -44,6 +45,7 @@ namespace KXM{
                     float min;
                     float max;
                     float mean;
+                    float sumval;
                     float stdev;
                     vector<float> histogramdata{};
                    

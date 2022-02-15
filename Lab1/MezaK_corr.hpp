@@ -1,3 +1,4 @@
+#include "MezaK_stats.hpp"
 #ifndef MezaK_HeadrGaurd2
 #define MezaK_HeadrGaurd2
 
@@ -7,36 +8,26 @@
 
 using std::vector;
 
-namespace KXM{
+namespace KXM1{
 
-    class Stats{
+    class Corr{
         
          public:
                     //setters
-                    Stats(float, float);
+                    Corr(float, float);
                     
-                    void findmin(vector<float> data);
-                    void findmax(vector<float> data);
+                    void findcorr(vector<float> data1,vector<float> data2);
                     void findmean(vector<float> data);
-                    void findstdev(vector<float> data);
-                    void findhistogram(vector<float> data);
+                    void findvar(vector<float> data);
                 
-                    float getmin();
-                    float getmax();
+                    float getcorr();
                     float getmean();
-                    float getstdev();
-                    vector<float> gethistogram();
-
-                   
-                    
-
+                    float getvar();
            private:
                     //std::vector<float> data;
-                    float min;
-                    float max;
+                    float corr;
+                    float var;
                     float mean;
-                    float stdev;
-                    vector<float> histogramdata{};
                    
 
     };
