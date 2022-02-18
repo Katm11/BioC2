@@ -24,7 +24,7 @@ namespace IllbeHack{
                     //setters
                     TimeHacking(std::string objectToHack);
                    
-                    void setTimeToHack(int seconds);
+                    int setTimeToHack(int seconds);
                     string setObjectToHack(string object);
                     int getTimeToHack();
                     string getObjectToHack();

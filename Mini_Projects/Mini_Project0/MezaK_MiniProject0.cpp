@@ -8,14 +8,14 @@ IllbeHack::TimeHacking::TimeHacking(std::string objectToHack){
     this->objectToHack;
 }
 
-void IllbeHack::TimeHacking::setTimeToHack(int seconds){
+int IllbeHack::TimeHacking::setTimeToHack(int seconds){
 
-    seconds = this->time_to_hack;
+    return this->time_to_hack = seconds;
 }
 
 string IllbeHack::TimeHacking::setObjectToHack(string Object){
 
-    return Object = this->objectToHack;
+   return this->objectToHack = Object;
 }
 
 int IllbeHack::TimeHacking::getTimeToHack(){
@@ -41,7 +41,7 @@ int main(int arc, char* argv[]){
 
     std::string Object;
     std::string reason;
-    int time;
+    int seconds;
 
     cout<<"What Object do you want to hack? ";
     cin>>Object;
@@ -50,16 +50,17 @@ int main(int arc, char* argv[]){
     //cin >> reason;
 
     cout<<"For how long (seconds) ?? ";
-    cin >> time;
+    cin >> seconds;
 
-    IllbeHack::TimeHacking Hack(Object);
+    string temp;
+    IllbeHack::TimeHacking Hack(temp);
 
     Hack.setObjectToHack(Object);
     string result = Hack.getObjectToHack();
-    cout << "You want to Hack: " << result << endl;
+    cout << "\nYou are Hacking: " << result << endl;
  
-    Hack.setTimeToHack(time);
-   // int sec = Hack.getTimeToHack();
+    Hack.setTimeToHack(seconds);
+   int time = Hack.getTimeToHack();
     cout << "Hack time entered: " << time << " Seconds" << endl;
     
     Hack.hackTime();
