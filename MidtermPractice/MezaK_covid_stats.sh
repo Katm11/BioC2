@@ -92,13 +92,14 @@ echo "${date[@]}" > dates.txt
 index=0
 sum=0
 avg=0
-while [ "${date[$index]}" == "2020-02-"* ]
+while [ "${date[$index]}" == "2020-02-24" ]
 do
-    sum=("$sum + ${new_cases_per_million[$index]}")
+    sum=$(echo "$sum + ${new_cases_per_million[$index]}" | bc -l )
         index=$((index + 1));
 done 
-avg=("$sum / $index")
-echo "The average is $avg"
+avg=$(echo "$sum / $index" | bc -l )
+echo The average is $avg
+
 #check for the user input
 # totalCases=0
 # for i in "${date[@]}"; do :
