@@ -89,10 +89,30 @@ echo "${date[@]}" > dates.txt
 #sort newCasesPmil.txt | uniq -d | wc -l
 #sort dates.txt | uniq -d | wc -l
 #sort countries.txt | uniq -d | wc -l
+
+sed -i "s/ /,/g" dates.txt
+#headers=={ head -n 1}
+OLDIFS=$IFS
+IFS=',/'
+while IFS='/' read -ra dates
+#[ ! -f $INPUT ] && { echo "$INPUT file not found"; exit 99; }
+do
+        # display $line or do something with $line
+     month+=("${dates[0]}")
+      day+=("${dates[1]}")
+      year+=("${dates[2]}")
+
+done < dates.txt
+IFS=$OLDIFS
+
+echo "${year[@]}" > year.txt
+echo "${month[@]}" > month.txt
+echo "${day[@]}" > day.txt
+
 index=0
 sum=0
 avg=0
-while [ "${date[$index]}" == "2020-02-24" ]
+while [ "${date[$index]}" == "1/26/2020" ]
 do
     sum=$(echo "$sum + ${new_cases_per_million[$index]}" | bc -l )
         index=$((index + 1));
