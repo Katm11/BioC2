@@ -43,65 +43,64 @@ touch makeFile
 # echo "Please enter file description: "
 # read Description
 # echo -e "#Author: $Description\n" >> makeFile
-echo "CC=g++" > makeFile
+echo -e "CC=g++\n" > makeFile
 
 #generate an "all" target wgich consists of each of the above targets and generate an executable for the code
 
 #get just .cpp file names w/o file path 
 cFiles=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2))
 #echo "cpp: ${cFiles[@]}" >> makeFile
+
 #get just .cpp file names w/o file path. Not sure why .cpp is picking up but not .hpp!!
+
 hFiles=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2 | sed 's/.cpp/.hpp/g'))
 #echo "hpp: ${hFiles[@]}" >> makeFile
+
+declare -a executables=($(grep -rl --include=\*.cpp ./ | cut -d '/' -f2 | sed 's/.cpp/.o/g' ))
+
 #a. Assume only one file contains a main function (make code do the work)
 #use grep?
 if grep -Rl 'main' $f; then
     echo -e "Main Function Found\n"
+    main=($(grep -Rl 'main' $f))
 else
     echo -e "!!ERROR: Main not found!!\n"
 fi
 
-declare -a executables=($(grep -rl --include=\*.cpp ./ | cut -d '/' -f2 | sed 's/.cpp/.o/g' ))
-#echo "all: ${executables[@]}" >> makeFile
+echo $main | rev | cut -d '/' -f1 | rev | sed 's/.cpp/.o/g'
+main1= echo $main | rev | cut -d '/' -f1 | rev
+#declare -a main=($(grep -rl --include=\*.cpp ./ ))
 
-exe=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2 | cut -d '.' -f1 | sed 's/.cpp/.o/g'))
-co=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2 | cut -d '.' -f1))
-hp=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2 | cut -d '.' -f1 ))
-#echo "comp: ${compFiles[@]}" >> makeFile
-length= echo ${#executables[@]}
-clength= echo ${#cFiles[@]}
-hlength= echo ${#hFiles[@]}
-
-# for ((i = 0; i != length; i++)); do #cycle through executable
-    
-#     for ((j = 0; j != clength; j++)); do #cycle through executable
-
-#         for ((k = 0; k != hlength; k++)); do #cycle through executable
-#    # echo -n "all: ${executables[i]} " >> makeFile
-#     if [[ ${exe[i]} -eq ${co[j]} -eq ${hp[k]} ]]; then
-
-#       echo "${executables[i]}: ${cFiles[j]} ${hfiles[k]}" >> makeFile
-#     fi
-#  done
-#  done
+length="${#executables[@]}"
+# clength= echo ${#cFiles[@]}
+# hlength= echo ${#hFiles[@]}
+# l=$(ls $1 | wc -l)
+# j=0
+# while [ $j -lt $length ]
+# do
+# echo -e "$main: $mail1 ${cFiles[j]} ${hFiles[j]}" >> makeFile
+# echo -e "\tg++ -c ${main::-2} $^\n" >> makeFile
+# j=$((j+1))
 # done
 
-for((i=0; i<length; ++i)); do
-  for((j=0; j<26; ++j)); do
-    if [[ ${exe[i]} == ${co[j]} ]]; then
-
-      echo "${executables[i]}" >> makeFile
-    fi
-  done
+i=0
+while [ $i -lt $length ]
+do
+echo -e "${executables[i]}: ${cFiles[i]} ${hFiles[i]}" >> makeFile
+echo -e "\tg++ -c ${executables[i]::-2} $^\n" >> makeFile
+i=$((i+1))
 done
+
 #b.the executable must be the name of the folder containing the code
 
+echo -e "all: ${executables[@]}\n" >> makeFile
+
 #Generate a "clean" target that removes all relevent compilation files
-# clean:
-# 		rm -f *.o 
-# 		rm -f *.gch
-# 		rm -f all 
+echo "clean:" >> makeFile
+echo -e "\trm -f *.o" >> makeFile
+echo -e "\trm -f *.gch" >> makeFile
+echo -e  "\trm -f all" >> makeFile
 
-
+make -f makeFile
 #after makefile is generate, performa a makeall then run the executable
 
