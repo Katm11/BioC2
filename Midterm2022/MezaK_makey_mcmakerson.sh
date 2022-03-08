@@ -43,20 +43,19 @@ touch makeFile
 # echo "Please enter file description: "
 # read Description
 # echo -e "#Author: $Description\n" >> makeFile
-echo "CC=g++" >> makeFile
+echo "CC=g++" > makeFile
 
 #generate an "all" target wgich consists of each of the above targets and generate an executable for the code
 
-grep -rl --include=*.cpp ./ | cut -d '/' -f2 | sed 's/.cpp/.o/g' 
-
-
+# for ((i = 0; i != length; i++)); do
+#    echo -n "all: ${executables[i]} " >> makeFile
+# done
 #get just .cpp file names w/o file path 
-grep -rl --include=*.cpp ./ | cut -d '/' -f2
-
+cFiles=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2))
+echo "cpp: ${cFiles[@]}" >> makeFile
 #get just .cpp file names w/o file path. Not sure why .cpp is picking up but not .hpp!!
-grep -rl --include=*.hpp ./ | cut -d '/' -f2
-
-echo "all: "
+hFiles=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2 | sed 's/.cpp/.hpp/g'))
+echo "hpp: ${hFiles[@]}" >> makeFile
 #a. Assume only one file contains a main function (make code do the work)
 #use grep?
 if grep -Rl 'main' $f; then
@@ -65,6 +64,8 @@ else
     echo -e "!!ERROR: Main not found!!\n"
 fi
 
+declare -a executables=($(grep -rl --include=\*.cpp ./ | cut -d '/' -f2 | sed 's/.cpp/.o/g' ))
+echo "all: ${executables[@]}" >> makeFile
 
 
 

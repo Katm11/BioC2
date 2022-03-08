@@ -1,2 +1,4 @@
-
 CC=g++
+cpp: toss_a_coin.cpp valley_of_plenty.cpp wolf.cpp
+hpp: toss_a_coin.hpp valley_of_plenty.hpp wolf.hpp
+all: toss_a_coin.o valley_of_plenty.o wolf.o
