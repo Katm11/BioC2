@@ -16,10 +16,12 @@ fi
 
 Input=$1
 
-while IFS=$"\n" read -r lines;
+while read lines;
 do
     data+=$lines;
 done < $Input
 
-echo "${data[@]}" > $Input.txt
+echo "${data[@]}" >> $Input.txt
+
+case 
 
