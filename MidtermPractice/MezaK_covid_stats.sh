@@ -2,95 +2,43 @@
 # date: 3/6/22
 # this script downloads latest data on COVID from website and provides summary info to user
 # 
+
+if [ ! -f "owid-covid-data.csv" ]                   #set up all the variables in int form instead of string
+then
+    wget https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv -c owid-covid-data.csv
+fi
+
+if [ ! $1 ]
+then
+    echo "No first input"
+    exit 1
+fi
+
+# if [ ! $2 ]
+# then
+#     echo "No second input"
+#     exit 1
+# fi
+
 INPUT=owid-covid-data.csv
 
 OLDIFS=$IFS
 IFS=','
 
-#headers=={ head -n 1}
 while IFS=',' read -ra data
 #[ ! -f $INPUT ] && { echo "$INPUT file not found"; exit 99; }
 
 do
-        # display $line or do something with $line
-	# ios_code=${data[0]}
-    # continent=${data[1]}
     location+=("${data[2]}")		
-    date+=("${data[3]}")		
-    # total_cases=${data[4]}
-    # new_cases=${data[5]}	
-    # #new_cases_smoothed	
-    # total_deaths=${data[7]}	
-    # new_deaths=${data[8]}	
-    # #new_deaths_smoothed	
-    # total_cases_per_million=${data[10]}		
+    date+=("${data[3]}")				
     new_cases_per_million+=("${data[11]}")	
-    #new_cases_smoothed_per_million	
-    #total_deaths_per_million	
-    #new_deaths_per_million	
-    # new_deaths_smoothed_per_million	
-    # reproduction_rate	
-    # icu_patients	
-    # icu_patients_per_million	
-    # hosp_patients	
-    # hosp_patients_per_million	
-    # weekly_icu_admissions	
-    # weekly_icu_admissions_per_million	
-    # weekly_hosp_admissions	
-    # weekly_hosp_admissions_per_million	
-    # new_tests	
-    # total_tests	
-    # total_tests_per_thousand	
-    # new_tests_per_thousand	
-    # new_tests_smoothed	
-    # new_tests_smoothed_per_thousand	
-    # positive_rate	
-    # tests_per_case	
-    # tests_units	
-    # total_vaccinations	
-    # people_vaccinated	
-    # people_fully_vaccinated	
-    # total_boosters	
-    # new_vaccinations	
-    # new_vaccinations_smoothed	
-    # total_vaccinations_per_hundred	
-    # people_vaccinated_per_hundred	
-    # people_fully_vaccinated_per_hundred	
-    # total_boosters_per_hundred	
-    # new_vaccinations_smoothed_per_million	
-    # new_people_vaccinated_smoothed	
-    # new_people_vaccinated_smoothed_per_hundred	
-    # stringency_index	
-    # population	
-    # population_density	
-    # median_age	
-    # aged_65_older	
-    # aged_70_older	
-    # gdp_per_capita	
-    # extreme_poverty	
-    # cardiovasc_death_rate	
-    # diabetes_prevalence	
-    # female_smokers	
-    # male_smokers	
-    # handwashing_facilities	
-    # hospital_beds_per_thousand	
-    # life_expectancy	
-    # human_development_index	
-    # excess_mortality_cumulative_absolute	
-    # excess_mortality_cumulative	excess_mortality	
-    # excess_mortality_cumulative_per_million
+  
 done < <(tail -n +2 $INPUT)
 IFS=$OLDIFS
 
 echo "${location[@]}" > countries.txt
 echo "${new_cases_per_million[@]}" > newCasesPmil.txt
 echo "${date[@]}" > dates.txt
-
-#sort newCasesPmil.txt | uniq -d | wc -l
-#sort dates.txt | uniq -d | wc -l
-#sort countries.txt | uniq -d | wc -l
-
-#sed -i "s/ /,/g" dates.txt
 
 #headers=={ head -n 1}
 # OLDIFS=$IFS
@@ -116,27 +64,25 @@ echo "${date[@]}" > dates.txt
 sum=0
 avg=0
 #"${myarr[0]:7:3}" i = 0 ; i <= 1000 ; i++
-# if 
-# echo "Do that? [Y,n]"
-# read DO_THAT
-# echo "Please enter the reference country name"
-# read refCountry
-# if ["refCountry"="Australia"]; then
-#     index=0
-#   do_that
-# fi
-# read -n1 -p "Do that? [y,n]" doit 
-# case $doit in  
-#   y|Y) echo yes ;; 
-#   n|N) echo no ;; 
-#   *) echo dont know ;; 
+
+# read -p "Please enter the reference country name: " refCountry 
+# case $refCountry in  
+#   Australia) start=$(echo "0") ;;
+#   US) start=$(echo "772") ;;
+#   *) echo "Country not found" ;; 
 # esac
-read -p "Please enter the reference country name: " refCountry 
-case $refCountry in  
-  Australia) start=$(echo "0") ;;
-  US) start=$(echo "772") ;;
-  *) echo "Country not found" ;; 
+
+case "$1" in
+  "Australia")
+    start=$(echo "0") ;;
+  "US")
+    start=$(echo "772") ;;
+  *)
+    echo "Country Data Not found"
+    exit 1
+    ;;
 esac
+MONTHS=(blank Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec)
 for ((index = $start ; "${date[index]:0:1}" == "${date[index+1]:0:1}" ; index++))
 do
     sum=$(echo "$sum + ${new_cases_per_million[$index]}" | bc -l )
@@ -144,8 +90,12 @@ do
     #index=$((index + 1));
 done 
 avg=$(echo "$sum / $index" | bc -l )
-echo The average is $avg
+month=${date[index-2]:0:1}
+echo The average for $1 during ${MONTHS[month]} ${date[index-2]:5:7} is $avg
 
+
+
+#echo ${MONTHS[month]}
 #check for the user input
 # totalCases=0
 # for i in "${date[@]}"; do :
