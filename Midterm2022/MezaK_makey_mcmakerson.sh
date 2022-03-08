@@ -47,15 +47,12 @@ echo "CC=g++" > makeFile
 
 #generate an "all" target wgich consists of each of the above targets and generate an executable for the code
 
-# for ((i = 0; i != length; i++)); do
-#    echo -n "all: ${executables[i]} " >> makeFile
-# done
 #get just .cpp file names w/o file path 
 cFiles=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2))
-echo "cpp: ${cFiles[@]}" >> makeFile
+#echo "cpp: ${cFiles[@]}" >> makeFile
 #get just .cpp file names w/o file path. Not sure why .cpp is picking up but not .hpp!!
 hFiles=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2 | sed 's/.cpp/.hpp/g'))
-echo "hpp: ${hFiles[@]}" >> makeFile
+#echo "hpp: ${hFiles[@]}" >> makeFile
 #a. Assume only one file contains a main function (make code do the work)
 #use grep?
 if grep -Rl 'main' $f; then
@@ -65,13 +62,38 @@ else
 fi
 
 declare -a executables=($(grep -rl --include=\*.cpp ./ | cut -d '/' -f2 | sed 's/.cpp/.o/g' ))
-echo "all: ${executables[@]}" >> makeFile
+#echo "all: ${executables[@]}" >> makeFile
 
+exe=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2 | cut -d '.' -f1 | sed 's/.cpp/.o/g'))
+co=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2 | cut -d '.' -f1))
+hp=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2 | cut -d '.' -f1 ))
+#echo "comp: ${compFiles[@]}" >> makeFile
+length= echo ${#executables[@]}
+clength= echo ${#cFiles[@]}
+hlength= echo ${#hFiles[@]}
 
+# for ((i = 0; i != length; i++)); do #cycle through executable
+    
+#     for ((j = 0; j != clength; j++)); do #cycle through executable
 
+#         for ((k = 0; k != hlength; k++)); do #cycle through executable
+#    # echo -n "all: ${executables[i]} " >> makeFile
+#     if [[ ${exe[i]} -eq ${co[j]} -eq ${hp[k]} ]]; then
 
+#       echo "${executables[i]}: ${cFiles[j]} ${hfiles[k]}" >> makeFile
+#     fi
+#  done
+#  done
+# done
 
+for((i=0; i<length; ++i)); do
+  for((j=0; j<26; ++j)); do
+    if [[ ${exe[i]} == ${co[j]} ]]; then
 
+      echo "${executables[i]}" >> makeFile
+    fi
+  done
+done
 #b.the executable must be the name of the folder containing the code
 
 #Generate a "clean" target that removes all relevent compilation files
