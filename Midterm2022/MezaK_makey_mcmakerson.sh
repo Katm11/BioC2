@@ -25,6 +25,7 @@ do
   echo -e "Processing $f file...\n"
   # take action on each file. $f store current file name
   cat "$f"
+  
   echo -e '\n'
 done
 
@@ -42,16 +43,33 @@ touch makeFile
 # echo "Please enter file description: "
 # read Description
 # echo -e "#Author: $Description\n" >> makeFile
+echo "CC=g++" >> makeFile
 
 #generate an "all" target wgich consists of each of the above targets and generate an executable for the code
 
+grep -rl --include=*.cpp ./ | cut -d '/' -f2 | sed 's/.cpp/.o/g' 
+
+
+#get just .cpp file names w/o file path 
+grep -rl --include=*.cpp ./ | cut -d '/' -f2
+
+#get just .cpp file names w/o file path. Not sure why .cpp is picking up but not .hpp!!
+grep -rl --include=*.hpp ./ | cut -d '/' -f2
+
+echo "all: "
 #a. Assume only one file contains a main function (make code do the work)
 #use grep?
 if grep -Rl 'main' $f; then
-    echo "Main Function Found"
+    echo -e "Main Function Found\n"
 else
     echo -e "!!ERROR: Main not found!!\n"
 fi
+
+
+
+
+
+
 
 #b.the executable must be the name of the folder containing the code
 
