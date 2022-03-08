@@ -112,11 +112,32 @@ echo "${date[@]}" > dates.txt
 #echo $date[@] "+%m"
 #echo dates[@] | sed -r 's/(.{1}).*/\1/'
 #echo dates[@] | sed -r 's//.*//'
-index=0
+#index=0
 sum=0
 avg=0
 #"${myarr[0]:7:3}" i = 0 ; i <= 1000 ; i++
-for ((index = 0 ; "${date[index]:0:1}" == "${date[index+1]:0:1}" ; index++))
+# if 
+# echo "Do that? [Y,n]"
+# read DO_THAT
+# echo "Please enter the reference country name"
+# read refCountry
+# if ["refCountry"="Australia"]; then
+#     index=0
+#   do_that
+# fi
+# read -n1 -p "Do that? [y,n]" doit 
+# case $doit in  
+#   y|Y) echo yes ;; 
+#   n|N) echo no ;; 
+#   *) echo dont know ;; 
+# esac
+read -p "Please enter the reference country name: " refCountry 
+case $refCountry in  
+  Australia) start=$(echo "0") ;;
+  US) start=$(echo "772") ;;
+  *) echo "Country not found" ;; 
+esac
+for ((index = $start ; "${date[index]:0:1}" == "${date[index+1]:0:1}" ; index++))
 do
     sum=$(echo "$sum + ${new_cases_per_million[$index]}" | bc -l )
     echo $sum
