@@ -115,12 +115,12 @@ echo "${date[@]}" > dates.txt
 index=0
 sum=0
 avg=0
-#"${myarr[0]:7:3}" 
-while [ "${date[index]:0:1}" == "${date[index+1]:0:1}" ]
+#"${myarr[0]:7:3}" i = 0 ; i <= 1000 ; i++
+for ((index = 0 ; "${date[index]:0:1}" == "${date[index+1]:0:1}" ; index++))
 do
     sum=$(echo "$sum + ${new_cases_per_million[$index]}" | bc -l )
     echo $sum
-    index=$((index + 1));
+    #index=$((index + 1));
 done 
 avg=$(echo "$sum / $index" | bc -l )
 echo The average is $avg
