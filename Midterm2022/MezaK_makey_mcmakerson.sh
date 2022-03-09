@@ -1,7 +1,7 @@
 #!/bin/bash
 #Kat Meza
 # date: 3/8/22
-# Description: Automatically generate a makefile for an arbitrary code project
+# Description: Automatically generate a Makefile for an arbitrary code project
 #
 
 echo "Passed arguments: $@"
@@ -31,32 +31,33 @@ done
 
 #Create Makefile and set up comments
 
-touch makeFile
+touch Makefile
 
 # echo -e "Generating header\n"
 # echo "Please enter the author name: "
 # read Creator
-# echo -e "#Author: $Creator" >> makeFile
+# echo -e "#Author: $Creator" >> Makefile
 # echo "Please enter date: "
 # read Date
-# echo -e "#Date: $Date" >> makeFile
+# echo -e "#Date: $Date" >> Makefile
 # echo "Please enter file description: "
 # read Description
-# echo -e "#Author: $Description\n" >> makeFile
-echo -e "CC=g++\n" > makeFile
+# echo -e "#Author: $Description\n" >> Makefile
+
+echo -e "CC = g++\n" > Makefile
 
 #generate an "all" target wgich consists of each of the above targets and generate an executable for the code
 
 #get just .cpp file names w/o file path 
 cFiles=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2))
-#echo "cpp: ${cFiles[@]}" >> makeFile
+#echo "cpp: ${cFiles[@]}" >> Makefile
 
 #get just .cpp file names w/o file path. Not sure why .cpp is picking up but not .hpp!!
 
 hFiles=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2 | sed 's/.cpp/.hpp/g'))
-#echo "hpp: ${hFiles[@]}" >> makeFile
+#echo "hpp: ${hFiles[@]}" >> Makefile
 
-declare -a executables=($(grep -rl --include=\*.cpp ./ | cut -d '/' -f2 | sed 's/.cpp/.o/g' ))
+declare -a executables=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2 | sed 's/.cpp/.o/g' ))
 
 #a. Assume only one file contains a main function (make code do the work)
 #use grep?
@@ -67,40 +68,43 @@ else
     echo -e "!!ERROR: Main not found!!\n"
 fi
 
-echo $main | rev | cut -d '/' -f1 | rev | sed 's/.cpp/.o/g'
-main1= echo $main | rev | cut -d '/' -f1 | rev
+main0=$(echo $main | rev | cut -d '/' -f1 | rev | sed 's/.cpp/.o/g')
+main1=$(echo $main | rev | cut -d '/' -f1 | rev)
 #declare -a main=($(grep -rl --include=\*.cpp ./ ))
+#echo $main0
 
 length="${#executables[@]}"
-# clength= echo ${#cFiles[@]}
-# hlength= echo ${#hFiles[@]}
-# l=$(ls $1 | wc -l)
-# j=0
-# while [ $j -lt $length ]
-# do
-# echo -e "$main: $mail1 ${cFiles[j]} ${hFiles[j]}" >> makeFile
-# echo -e "\tg++ -c ${main::-2} $^\n" >> makeFile
-# j=$((j+1))
-# done
+
 
 i=0
+k=1
 while [ $i -lt $length ]
 do
-echo -e "${executables[i]}: ${cFiles[i]} ${hFiles[i]}" >> makeFile
-echo -e "\tg++ -c ${executables[i]::-2} $^\n" >> makeFile
+echo -e "${executables[i]}: ${cFiles[i]} ${hFiles[i]} ${hFiles[k]}" >> Makefile
+echo -e "\tg++ -c ${executables[i]::-2} $^\n" >> Makefile
 i=$((i+1))
 done
 
+target="$@"
+
+echo -e "$main0: $mail1 ${cFiles[@]} ${hFiles[@]}" >> Makefile
+echo -e "\tg++ -o $target $^\n" >> Makefile
+
+
 #b.the executable must be the name of the folder containing the code
 
-echo -e "all: ${executables[@]}\n" >> makeFile
+echo -e "all: ${executables[@]} $main0\n" >> Makefile
 
 #Generate a "clean" target that removes all relevent compilation files
-echo "clean:" >> makeFile
-echo -e "\trm -f *.o" >> makeFile
-echo -e "\trm -f *.gch" >> makeFile
-echo -e  "\trm -f all" >> makeFile
+echo "clean: " >> Makefile
+echo -e "\t rm -f *.o" >> Makefile
+echo -e "\t rm -f *.gch" >> Makefile
+#echo -e  "\t rm -f all" >> Makefile
 
-make -f makeFile
-#after makefile is generate, performa a makeall then run the executable
+#make clean
+make all
+#make -f Makefile
+
+#./.${main0::-2}
+#after Makefile is generate, perform a a makeall then run the executable
 
