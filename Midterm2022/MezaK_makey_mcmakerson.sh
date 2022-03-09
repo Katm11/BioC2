@@ -13,6 +13,7 @@ echo -e "Total number of arguments: $# \n"
 
 if [ "$1" ]                
 then
+    cd "$1"
     echo -e "****File Path Found****\n"
 else
     echo -e "!!ERROR: File Path not found!!\n"   #gotta love error checking
@@ -29,9 +30,15 @@ echo -e '\n'
 done
 
 #ls -L $1
-#Create Makefile and set up comments
+#Create Makefile
 
-touch Makefile
+if [ -f "Makefile" ]
+then
+    true
+else
+    touch "Makefile"
+fi
+#touch Makefile
 
 # echo -e "Generating header\n"
 # echo "Please enter the author name: "
@@ -47,7 +54,7 @@ touch Makefile
 echo -e "CC = g++\n" > Makefile
 
 #generate an "all" target wgich consists of each of the above targets and generate an executable for the code
-declare -a Files=($(ls -L $1))
+declare -a Files=($((ls -L $1) | sed 's/Makefile//g' ))
 echo ${Files[@]}
 
 declare -a cFiles=( ${Files[@]/*.hpp/} )
@@ -86,14 +93,15 @@ do
     if [ "$main" == "${executables[i]}" ]
     then
        
-        echo -e "${executables[i]}: ${cFiles[@]} ${hFiles[@]} ${executables[@]}" >> Makefile
-        echo -e "\t \t \t g++ -c ${executables[i]::-2} $^" >> Makefile
-        echo -e "\t \t \t g++ -o "\$@" $^\n" >> Makefile
+        echo -e "${executables[i]}: ${cFiles[@]} ${hFiles[@]}" >> Makefile
+        echo -e "\t \t \t g++ -c $^" >> Makefile
+        echo -e "\t \t \t g++ -o ${executables[i]::-2} $^\n" >> Makefile
         
     else
         
         inFiles=($(grep ".hpp" $1/${cFiles[i]} | tr -d '#"' | sed 's/include //g'))
-        echo -e "${executables[i]}: ${cFiles[i]} $inFiles" >> Makefile
+        inFiles2=($(grep ".hpp" $1/${inFiles} | tr -d '#"' | sed 's/include //g'))
+        echo -e "${executables[i]}: ${cFiles[i]} $inFiles $inFiles2" >> Makefile
         echo -e "\t \t \t g++ -c ${executables[i]::-2} $^\n" >> Makefile
         
     fi
@@ -112,10 +120,11 @@ echo -e "\t rm -f *.o" >> Makefile
 echo -e "\t rm -f *.gch" >> Makefile
 echo -e  "\t rm -f all" >> Makefile
 
+
 make clean
+#after Makefile is generate, perform a a makeall then run the executable
+
 make all
 #make -f Makefile
 
-#./.${main0::-2}
-#after Makefile is generate, perform a a makeall then run the executable
-
+./${main}
