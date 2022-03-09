@@ -4,7 +4,7 @@
 # Description: Automatically generate a Makefile for an arbitrary code project
 #
 
-echo "Passed arguments: $@"
+echo "Passed arguments: $1"
 
 echo -e "Total number of arguments: $# \n"
 
@@ -25,10 +25,10 @@ do
   echo -e "Processing $f file...\n"
   # take action on each file. $f store current file name
   cat "$f"
-  
-  echo -e '\n'
+echo -e '\n'
 done
 
+#ls -L $1
 #Create Makefile and set up comments
 
 touch Makefile
@@ -47,15 +47,26 @@ touch Makefile
 echo -e "CC = g++\n" > Makefile
 
 #generate an "all" target wgich consists of each of the above targets and generate an executable for the code
+declare -a Files=($(ls -L $1))
+echo ${Files[@]}
 
+declare -a patter=( ${Files[@]/*.hpp/} )
+echo ${patter[@]}
+
+declare -a patter=( ${Files[@]/*.cpp/} )
+echo ${patter[@]}
+
+#array=($(ls -d */))
 #get just .cpp file names w/o file path 
-cFiles=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2))
-#echo "cpp: ${cFiles[@]}" >> Makefile
+# cFiles=($( echo "${Files[@]}" | grep -rL ".cpp" ))
+# echo "cpp: ${cFiles[@]}"
 
+
+# find ${Files[@]} -name *.cpp 
 #get just .cpp file names w/o file path. Not sure why .cpp is picking up but not .hpp!!
-
-hFiles=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2 | sed 's/.cpp/.hpp/g'))
-#echo "hpp: ${hFiles[@]}" >> Makefile
+# hFiles=($(ls -L $1 | grep -rl --include=*.hpp ./ ))
+# #hFiles=($(ls -L $1 | grep -rl 'hpp'))| cut -d '/' -f2 
+# echo "hpp: ${hFiles[@]}"
 
 declare -a executables=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2 | sed 's/.cpp/.o/g' ))
 
