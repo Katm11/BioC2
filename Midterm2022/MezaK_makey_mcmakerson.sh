@@ -50,69 +50,69 @@ echo -e "CC = g++\n" > Makefile
 declare -a Files=($(ls -L $1))
 echo ${Files[@]}
 
-declare -a patter=( ${Files[@]/*.hpp/} )
-echo ${patter[@]}
+declare -a cFiles=( ${Files[@]/*.hpp/} )
+echo ${cFiles[@]}
 
-declare -a patter=( ${Files[@]/*.cpp/} )
-echo ${patter[@]}
+declare -a hFiles=( ${Files[@]/*.cpp/} )
+echo ${hFiles[@]}
 
-#array=($(ls -d */))
-#get just .cpp file names w/o file path 
-# cFiles=($( echo "${Files[@]}" | grep -rL ".cpp" ))
-# echo "cpp: ${cFiles[@]}"
-
-
-# find ${Files[@]} -name *.cpp 
-#get just .cpp file names w/o file path. Not sure why .cpp is picking up but not .hpp!!
-# hFiles=($(ls -L $1 | grep -rl --include=*.hpp ./ ))
-# #hFiles=($(ls -L $1 | grep -rl 'hpp'))| cut -d '/' -f2 
-# echo "hpp: ${hFiles[@]}"
-
-declare -a executables=($(grep -rl --include=*.cpp ./ | cut -d '/' -f2 | sed 's/.cpp/.o/g' ))
+declare -a executables=($( echo ${cFiles[@]} | sed 's/.cpp/.o/g' ))
+echo ${executables[@]}
 
 #a. Assume only one file contains a main function (make code do the work)
 #use grep?
 if grep -Rl 'main' $f; then
     echo -e "Main Function Found\n"
-    main=($(grep -Rl 'main' $f))
+    main=($(grep -Rl 'main' $f | rev | cut -d '/' -f1 | rev | sed 's/.cpp/.o/g' ))
 else
     echo -e "!!ERROR: Main not found!!\n"
 fi
-
-main0=$(echo $main | rev | cut -d '/' -f1 | rev | sed 's/.cpp/.o/g')
-main1=$(echo $main | rev | cut -d '/' -f1 | rev)
+#main0=$(echo $main | rev | cut -d '/' -f1 | rev | sed 's/.cpp/.o/g')
+#main1=$(echo $main | rev | cut -d '/' -f1 | rev)
 #declare -a main=($(grep -rl --include=\*.cpp ./ ))
 #echo $main0
 
 length="${#executables[@]}"
 
 
+
+# inFiles=($(grep ".hpp" $1/${cFiles} | tr -d '#"' | sed 's/include //g'))
+# #grep ".hpp" $1/${cFiles[3]} | tr -d '#"' | sed 's/include //g'
+
+
 i=0
-k=1
 while [ $i -lt $length ]
 do
-echo -e "${executables[i]}: ${cFiles[i]} ${hFiles[i]} ${hFiles[k]}" >> Makefile
-echo -e "\tg++ -c ${executables[i]::-2} $^\n" >> Makefile
+    if [ "$main" == "${executables[i]}" ]
+    then
+       
+        echo -e "${executables[i]}: ${cFiles[@]} ${hFiles[@]} ${executables[@]}" >> Makefile
+        echo -e "\t \t \t g++ -c ${executables[i]::-2} $^" >> Makefile
+        echo -e "\t \t \t g++ -o "\$@" $^\n" >> Makefile
+        
+    else
+        
+        inFiles=($(grep ".hpp" $1/${cFiles[i]} | tr -d '#"' | sed 's/include //g'))
+        echo -e "${executables[i]}: ${cFiles[i]} $inFiles" >> Makefile
+        echo -e "\t \t \t g++ -c ${executables[i]::-2} $^\n" >> Makefile
+        
+    fi
+
 i=$((i+1))
+
 done
-
-target="$@"
-
-echo -e "$main0: $mail1 ${cFiles[@]} ${hFiles[@]}" >> Makefile
-echo -e "\tg++ -o $target $^\n" >> Makefile
-
 
 #b.the executable must be the name of the folder containing the code
 
-echo -e "all: ${executables[@]} $main0\n" >> Makefile
+echo -e "all: ${executables[@]}\n" >> Makefile
 
 #Generate a "clean" target that removes all relevent compilation files
 echo "clean: " >> Makefile
 echo -e "\t rm -f *.o" >> Makefile
 echo -e "\t rm -f *.gch" >> Makefile
-#echo -e  "\t rm -f all" >> Makefile
+echo -e  "\t rm -f all" >> Makefile
 
-#make clean
+make clean
 make all
 #make -f Makefile
 

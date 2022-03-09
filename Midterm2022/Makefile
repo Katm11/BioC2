@@ -1,19 +1,21 @@
 CC = g++
 
-toss_a_coin.o:   
-	g++ -c toss_a_coin $^
+dandelion.o: dandelion.cpp toss_a_coin.cpp valley_of_plenty.cpp wolf.cpp toss_a_coin.hpp valley_of_plenty.hpp wolf.hpp dandelion.o toss_a_coin.o valley_of_plenty.o wolf.o
+	 	 	 g++ -c dandelion $^
+	 	 	 g++ -o $@ $^
 
-valley_of_plenty.o:   
-	g++ -c valley_of_plenty $^
+toss_a_coin.o: toss_a_coin.cpp toss_a_coin.hpp
+	 	 	 g++ -c toss_a_coin $^
 
-wolf.o:   
-	g++ -c wolf $^
+valley_of_plenty.o: valley_of_plenty.cpp valley_of_plenty.hpp
+	 	 	 g++ -c valley_of_plenty $^
 
-dandelion.o:   
-	g++ -o /home/mezak/BioC2/Midterm2022/Straightforward $^
+wolf.o: wolf.cpp wolf.hpp
+	 	 	 g++ -c wolf $^
 
-all: toss_a_coin.o valley_of_plenty.o wolf.o dandelion.o
+all: dandelion.o toss_a_coin.o valley_of_plenty.o wolf.o
 
 clean: 
 	 rm -f *.o
 	 rm -f *.gch
+	 rm -f all
