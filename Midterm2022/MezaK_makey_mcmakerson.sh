@@ -8,7 +8,6 @@ echo "Passed arguments: $1"
 
 echo -e "Total number of arguments: $# \n"
 
-
 #only one argument: a path to a directory with code files inside
 
 if [ "$1" ]                
@@ -18,8 +17,21 @@ then
 else
     echo -e "!!ERROR: File Path not found!!\n"   #gotta love error checking
 fi
+folder=($(basename $1))
 
 #generate seperate targets for each cpp file in directory
+
+declare -a Files=($(ls -L *.hpp *.cpp ))
+echo ${Files[@]}
+
+declare -a cFiles=( ${Files[@]/*.hpp/} )
+echo ${cFiles[@]}
+
+declare -a hFiles=( ${Files[@]/*.cpp/} )
+echo ${hFiles[@]}
+
+declare -a executables=($( echo ${cFiles[@]} | sed 's/.cpp/.o/g' ))
+echo ${executables[@]}
 
 #Create Makefile
 
@@ -45,53 +57,28 @@ fi
 
 echo -e "CC = g++\n" > Makefile
 
-#generate an "all" target wgich consists of each of the above targets and generate an executable for the code
-# declare -a Files=($((ls -LA $1) | sed 's/Makefile//g' ))
-# echo ${Files[@]}
-
-declare -a Files=($(ls -L *.hpp *.cpp ))
-echo ${Files[@]}
-
-declare -a cFiles=( ${Files[@]/*.hpp/} )
-echo ${cFiles[@]}
-
-declare -a hFiles=( ${Files[@]/*.cpp/} )
-echo ${hFiles[@]}
-
-declare -a executables=($( echo ${cFiles[@]} | sed 's/.cpp/.o/g' ))
-echo ${executables[@]}
-
 #a. Assume only one file contains a main function (make code do the work)
-#use grep?
-if grep -Rl 'main' $f; then
+
+#use grep? Use grep
+if grep -Rl 'main(' $f; then
     echo -e "Main Function Found\n"
-    main=($(grep -Rl 'main' $f | rev | cut -d '/' -f1 | rev | sed 's/.cpp/.o/g' ))
+    main=($(grep -Rl 'main(' $f | sed 's/.cpp/.o/g' ))
+    echo "$main"
 else
     echo -e "!!ERROR: Main not found!!\n"
 fi
-#main0=$(echo $main | rev | cut -d '/' -f1 | rev | sed 's/.cpp/.o/g')
-#main1=$(echo $main | rev | cut -d '/' -f1 | rev)
-#declare -a main=($(grep -rl --include=\*.cpp ./ ))
-#echo $main0
 
+#generate an "all" target wgich consists of each of the above targets and generate an executable for the code
 length="${#executables[@]}"
-
-
-
-# inFiles=($(grep ".hpp" $1/${cFiles} | tr -d '#"' | sed 's/include //g'))
-# #grep ".hpp" $1/${cFiles[3]} | tr -d '#"' | sed 's/include //g'
-
 
 i=0
 while [ $i -lt $length ]
 do
     if [ "$main" == "${executables[i]}" ]
     then
-       
-        echo -e "${executables[i]}: ${cFiles[@]} ${executables[i]}" >> Makefile
+        echo -e "${executables[i]}: ${cFiles[i]} ${executables[@]}" >> Makefile
         echo -e "\t \t \t g++ -c $^" >> Makefile
-        echo -e "\t \t \t g++ -o ${executables[i]::-2} $^\n" >> Makefile
-        
+        echo -e "\t \t \t g++ -o $folder $^\n" >> Makefile
     else
         
         inFiles=($(grep ".hpp" $1/${cFiles[i]} | tr -d '#"' | sed 's/include //g'))
@@ -115,11 +102,9 @@ echo -e "\t rm -f *.o" >> Makefile
 echo -e "\t rm -f *.gch" >> Makefile
 echo -e  "\t rm -f all" >> Makefile
 
-
-make clean
 #after Makefile is generate, perform a a makeall then run the executable
-
+make clean
 make all
 #make -f Makefile
-
-./${main}
+echo -e "\n"
+./$folder

@@ -1,7 +1,8 @@
 CC = g++
 
-dandelion.o: dandelion.cpp toss_a_coin.hpp
+dandelion.o: dandelion.cpp dandelion.o toss_a_coin.o valley_of_plenty.o wolf.o
 	 	 	 g++ -c $^
+	 	 	 g++ -o Straightforward $^
 
 toss_a_coin.o: toss_a_coin.cpp toss_a_coin.hpp
 	 	 	 g++ -c $^
