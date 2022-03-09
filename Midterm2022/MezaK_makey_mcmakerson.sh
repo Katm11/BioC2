@@ -20,16 +20,7 @@ else
 fi
 
 #generate seperate targets for each cpp file in directory
-#FILES="/path/to/*"
-for f in $1
-do
-  echo -e "Processing $f file...\n"
-  # take action on each file. $f store current file name
-  cat "$f"
-echo -e '\n'
-done
 
-#ls -L $1
 #Create Makefile
 
 if [ -f "Makefile" ]
@@ -38,7 +29,8 @@ then
 else
     touch "Makefile"
 fi
-#touch Makefile
+
+#if you want to make a header from userinput!!
 
 # echo -e "Generating header\n"
 # echo "Please enter the author name: "
@@ -54,7 +46,10 @@ fi
 echo -e "CC = g++\n" > Makefile
 
 #generate an "all" target wgich consists of each of the above targets and generate an executable for the code
-declare -a Files=($((ls -L $1) | sed 's/Makefile//g' ))
+# declare -a Files=($((ls -LA $1) | sed 's/Makefile//g' ))
+# echo ${Files[@]}
+
+declare -a Files=($(ls -L *.hpp *.cpp ))
 echo ${Files[@]}
 
 declare -a cFiles=( ${Files[@]/*.hpp/} )
@@ -93,16 +88,16 @@ do
     if [ "$main" == "${executables[i]}" ]
     then
        
-        echo -e "${executables[i]}: ${cFiles[@]} ${hFiles[@]}" >> Makefile
+        echo -e "${executables[i]}: ${cFiles[@]} ${executables[i]}" >> Makefile
         echo -e "\t \t \t g++ -c $^" >> Makefile
         echo -e "\t \t \t g++ -o ${executables[i]::-2} $^\n" >> Makefile
         
     else
         
         inFiles=($(grep ".hpp" $1/${cFiles[i]} | tr -d '#"' | sed 's/include //g'))
-        inFiles2=($(grep ".hpp" $1/${inFiles} | tr -d '#"' | sed 's/include //g'))
-        echo -e "${executables[i]}: ${cFiles[i]} $inFiles $inFiles2" >> Makefile
-        echo -e "\t \t \t g++ -c ${executables[i]::-2} $^\n" >> Makefile
+        #inFiles2=($(grep ".hpp" $1/${inFiles} | tr -d '#"' | sed 's/include //g'))
+        echo -e "${executables[i]}: ${cFiles[i]} $inFiles" >> Makefile
+        echo -e "\t \t \t g++ -c $^\n" >> Makefile
         
     fi
 
