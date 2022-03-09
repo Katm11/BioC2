@@ -2,7 +2,6 @@
 #Kat Meza
 # date: 3/8/22
 # Description: Automatically generate a Makefile for an arbitrary code project
-#
 
 echo "Passed arguments: $1"
 
@@ -41,19 +40,6 @@ then
 else
     touch "Makefile"
 fi
-
-#if you want to make a header from userinput!!
-
-# echo -e "Generating header\n"
-# echo "Please enter the author name: "
-# read Creator
-# echo -e "#Author: $Creator" >> Makefile
-# echo "Please enter date: "
-# read Date
-# echo -e "#Date: $Date" >> Makefile
-# echo "Please enter file description: "
-# read Description
-# echo -e "#Author: $Description\n" >> Makefile
 
 echo -e "CC = g++\n" > Makefile
 
