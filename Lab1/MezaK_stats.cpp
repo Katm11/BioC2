@@ -166,3 +166,7 @@ std::vector<float> KXM::Stats::gethistogram(){
 
     return this->histogramdata;
 }
+
+// int main(){
+
+// }
